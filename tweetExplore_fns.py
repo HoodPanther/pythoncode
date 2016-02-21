@@ -92,18 +92,32 @@ def extract_indices(data, interest_field):
 	return item_index
 
 
-def autolabelInt(rects,axNum,ax):
+def autolabelInt(rects,axNum,ax,vals):
     """attach labels to bars, integers"""
+    i = 0
     for rect in rects:
         height = rect.get_height()
-        ax[axNum].text(rect.get_x() + rect.get_width()/2., 1.05*height,
+        if vals[i] > 0:
+            ax[axNum].text(rect.get_x() + rect.get_width()/2., height+.03,
                 '%d' % int(height),
                 ha='center', va='bottom')
+        else:
+            ax[axNum].text(rect.get_x() + rect.get_width()/2., -1*(height+.1),
+                '%d' % int(height),
+                ha='center', va='bottom')
+        i = i + 1
 
-def autolabelDec(rects,axNum,ax):
+def autolabelDec(rects,axNum,ax,vals):
     """attach labels to bars, 3 decimals"""
+    i = 0
     for rect in rects:
         height = rect.get_height()
-        ax[axNum].text(rect.get_x() + rect.get_width()/2., 1.05*height,
+        if vals[i] > 0:
+            ax[axNum].text(rect.get_x() + rect.get_width()/2., height+.03,
                 '%0.3f' % height,
                 ha='center', va='bottom')
+        else:
+            ax[axNum].text(rect.get_x() + rect.get_width()/2., -1*(height+.1),
+                '%0.3f' % height,
+                ha='center', va='bottom')
+        i = i + 1
