@@ -43,9 +43,41 @@ def extract_sentiment(tweet_list,person):
 			person_tweetInd.append(tweet)
 		else:
 			x = 1
-	print(person, '  # tweets:',len(person_tweetInd), 'avg polarity:', np.average(person_sentiment_polarity))
+	print(person, '  # tweets:',len(person_tweetInd))
 	return person_sentiment_polarity, person_sentiment_subjectivity, person_tweetInd
 
+def sortTweetsPosNeg(iperson, polarity_store, tweet_index_store, tweet_list):
+    """sorts tweets for given candidate by positive or negative sentiment, and creates/returns
+        lists of indices, sentiment values, and texts for tweets in the two categories. Scores of 0 are ignored """
+    pos_polarity = []
+    ind_pos_polarity = []
+    tweet_pos_polarity = []
+    neg_polarity = []
+    ind_neg_polarity = []
+    tweet_neg_polarity = []
+    # get sentiment scores for this candidate
+    current_polarity = polarity_store[iperson]
+    # get the indices for the tweets about this candidate
+    current_indices = tweet_index_store[iperson]
+    # for each sentiment value
+    for iscore,sentiment in enumerate(current_polarity):
+        curindex = current_indices[iscore]
+        # select positive sentiments
+        if sentiment > 0: 
+            # store sentiment and index
+            pos_polarity.append(sentiment)
+            ind_pos_polarity.append(curindex)
+            #get tweet text for current sentiment
+            tweet_pos_polarity.append(tweet_list[curindex]['text'])
+        # or negative sentiments
+        elif sentiment < 0:
+            #store sentiment and index
+            neg_polarity.append(sentiment)
+            ind_neg_polarity.append(curindex)
+            #get tweet text for current sentiment
+            tweet_neg_polarity.append(tweet_list[curindex]['text'])
+    
+    return pos_polarity, neg_polarity, ind_pos_polarity, ind_neg_polarity, tweet_pos_polarity, tweet_neg_polarity
 
 
 
@@ -72,10 +104,6 @@ def makeWordcloud(tweetList):
                               height=1400
                              ).generate(joinedTexts)
     return wordcloud 
-    # display wordcloud
-#     plt.imshow(wordcloud)
-#     plt.axis('off')
-#     plt.show();
 
 
 
@@ -92,7 +120,7 @@ def extract_indices(data, interest_field):
 	return item_index
 
 
-def autolabelInt(rects,axNum,ax,vals):
+def autolabelInt(rects,ax,axNum,vals):
     """attach labels to bars, integers"""
     i = 0
     for rect in rects:
@@ -107,7 +135,7 @@ def autolabelInt(rects,axNum,ax,vals):
                 ha='center', va='bottom')
         i = i + 1
 
-def autolabelDec(rects,axNum,ax,vals):
+def autolabelDec(rects,ax,axNum,vals):
     """attach labels to bars, 3 decimals"""
     i = 0
     for rect in rects:
