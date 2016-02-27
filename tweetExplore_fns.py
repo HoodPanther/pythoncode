@@ -10,6 +10,18 @@ def extract_tweets(data):
                 tweet_list.append(curtweet)
     return tweet_list
 
+def extract_indices(data, interest_field):
+    """Returns indices for tweets that contain a value within the specified field of interest"""
+    item_index = [] 
+    for index, val in enumerate(data):
+        curtweet = data[index]
+        if interest_field in curtweet:
+            if curtweet[interest_field] == None:
+                x = 1
+            else:
+                item_index.append(index)
+    return item_index
+
 def extract_tweets_fieldOfInterest(data, interest_field):
 	"""Returns tweets that contain a value within the specified field of interest"""
 	tweet_list = []	
@@ -79,36 +91,6 @@ def sortTweetsPosNeg(iperson, polarity_store, tweet_index_store, tweet_list):
     
     return pos_polarity, neg_polarity, ind_pos_polarity, ind_neg_polarity, tweet_pos_polarity, tweet_neg_polarity
 
-def rival_count(rival_list,current_inds):
-    """extract counts and indices of tweets that mention more than one candidate"""
-    from textblob import TextBlob
-    # for each potential rival 
-    for irival, rival in enumerate(rival_list):
-        cur_rival_index = []
-        cur_rival = candidates[rival]
-        # for each tweet about the candidate
-        for iind,textval in enumerate(current_inds):
-            curidx = current_inds[iind]
-            curtweet = tweet_list[curidx]["text"]
-            curblob = TextBlob(curtweet)
-            if curblob.words.count(cur_rival):
-                count[rival] = count[rival] + 1
-                cur_rival_index.append(current_inds[iind])
-        rival_index_temp.append(cur_rival_index)
-    return rival_index_temp, count
-
-
-def extract_indices(data, interest_field):
-	"""Returns indices for tweets that contain a value within the specified field of interest"""
-	item_index = []	
-	for index, val in enumerate(data):
-		curtweet = data[index]
-		if interest_field in curtweet:
-			if curtweet[interest_field] == None:
-				x = 1
-			else:
-				item_index.append(index)
-	return item_index
 
 
 def autolabelInt(rects,ax,axNum,vals):
@@ -140,3 +122,27 @@ def autolabelDec(rects,ax,axNum,vals):
                 '%0.3f' % height,
                 ha='center', va='bottom')
         i = i + 1
+
+
+def rival_count(rival_list,current_inds, candidates, tweet_list):
+    """extract counts and indices of tweets that mention more than one candidate"""
+    from textblob import TextBlob
+    count = [0]*len(candidates)
+    rival_index_temp = []
+    # for each potential rival 
+    for irival, rival in enumerate(rival_list):
+        cur_rival_index = []
+        cur_rival = candidates[rival]
+        # for each tweet about the candidate
+        for iind,textval in enumerate(current_inds):
+            curidx = current_inds[iind]
+            curtweet = tweet_list[curidx]["text"]
+            curblob = TextBlob(curtweet)
+            if curblob.words.count(cur_rival):
+                count[rival] = count[rival] + 1
+                cur_rival_index.append(current_inds[iind])
+        rival_index_temp.append(cur_rival_index)
+    return rival_index_temp, count
+
+
+
