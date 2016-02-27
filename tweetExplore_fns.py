@@ -79,32 +79,23 @@ def sortTweetsPosNeg(iperson, polarity_store, tweet_index_store, tweet_list):
     
     return pos_polarity, neg_polarity, ind_pos_polarity, ind_neg_polarity, tweet_pos_polarity, tweet_neg_polarity
 
-
-
-def makeWordcloud(tweetList):
-    """ Joins tweet list into single string, removes stop words and RT, then generates word cloud """
-    from wordcloud import WordCloud, STOPWORDS
-    newSTOP = STOPWORDS
-    newlist = []
-    for itweet,val in enumerate(tweetList):
-        curtweet = tweetList[itweet]
-        curtweet.replace('RT','')
-        newlist.append(curtweet)
-        
-    # add stopwords to exclude from wordcloud - 
-    newSTOP.update(('co','https','t','\'RT','R','T','RT ','RT@'))
-    joinedTexts = " ".join(str(x) for x in newlist)
-    setattr(WordCloud,"setfont",'/anaconda/envs/eq_env/lib/python3.5/site-packages/matplotlib/mpl-data/fonts/ttf/cmmi10.ttf')
-    # font_path='/anaconda/envs/eq_env/lib/python3.5/site-packages/matplotlib/mpl-data/fonts/ttf/cmmi10.ttf',
-
-    #generate wordcloud
-    wordcloud = WordCloud(stopwords=newSTOP,
-                              background_color='black',
-                              width=1700,
-                              height=1400
-                             ).generate(joinedTexts)
-    return wordcloud 
-
+def rival_count(rival_list,current_inds):
+    """extract counts and indices of tweets that mention more than one candidate"""
+    from textblob import TextBlob
+    # for each potential rival 
+    for irival, rival in enumerate(rival_list):
+        cur_rival_index = []
+        cur_rival = candidates[rival]
+        # for each tweet about the candidate
+        for iind,textval in enumerate(current_inds):
+            curidx = current_inds[iind]
+            curtweet = tweet_list[curidx]["text"]
+            curblob = TextBlob(curtweet)
+            if curblob.words.count(cur_rival):
+                count[rival] = count[rival] + 1
+                cur_rival_index.append(current_inds[iind])
+        rival_index_temp.append(cur_rival_index)
+    return rival_index_temp, count
 
 
 def extract_indices(data, interest_field):
