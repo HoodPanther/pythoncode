@@ -22,7 +22,7 @@ def extract_indices(data, interest_field):
                 item_index.append(index)
     return item_index
 
-def extract_tweets_fieldOfInterest(data, interest_field):
+def extract_tweets_interest_field(data, interest_field):
 	"""Returns tweets that contain a value within the specified field of interest"""
 	tweet_list = []	
 	for index, val in enumerate(data):
@@ -36,29 +36,30 @@ def extract_tweets_fieldOfInterest(data, interest_field):
 
 
 def extract_sentiment(tweet_list,person):
-	from textblob import TextBlob
-	import numpy as np
-	person_sentiment_polarity = []
-	person_tweetInd = []
-	person_sentiment_subjectivity = []
-	# for each tweet
-	for tweet,val in enumerate(tweet_list):
-		curText = tweet_list[tweet]['text']
-		cur_blob = TextBlob(curText)
-		# check that the tweet contains mention of candidate
-		if cur_blob.words.count(person):
-			cur_sentiment = cur_blob.sentiment
-			# save sentiment polarity and subjectivity
-			person_sentiment_polarity.append(cur_sentiment[0])
-			person_sentiment_subjectivity.append(cur_sentiment[1])
-			# save tweet index
-			person_tweetInd.append(tweet)
-		else:
-			x = 1
-	print(person, '  # tweets:',len(person_tweetInd))
-	return person_sentiment_polarity, person_sentiment_subjectivity, person_tweetInd
+    """ Returns the sentiment rating of each tweet, and indices for the tweets """
+    from textblob import TextBlob
+    import numpy as np
+    person_sentiment_polarity = []
+    person_tweetInd = []
+    person_sentiment_subjectivity = []
+    # for each tweet
+    for tweet,val in enumerate(tweet_list):
+        curText = tweet_list[tweet]['text']
+        cur_blob = TextBlob(curText)
+        # check that the tweet contains mention of candidate
+        if cur_blob.words.count(person):
+            cur_sentiment = cur_blob.sentiment
+            # save sentiment polarity and subjectivity
+            person_sentiment_polarity.append(cur_sentiment[0])
+            person_sentiment_subjectivity.append(cur_sentiment[1])
+            # save tweet index
+            person_tweetInd.append(tweet)
+        else:
+            x = 1
+    print(person, '  # tweets:',len(person_tweetInd))
+    return person_sentiment_polarity, person_sentiment_subjectivity, person_tweetInd
 
-def sortTweetsPosNeg(iperson, polarity_store, tweet_index_store, tweet_list):
+def sort_tweets_pos_neg(iperson, polarity_store, tweet_index_store, tweet_list):
     """sorts tweets for given candidate by positive or negative sentiment, and creates/returns
         lists of indices, sentiment values, and texts for tweets in the two categories. Scores of 0 are ignored """
     pos_polarity = []
@@ -93,7 +94,7 @@ def sortTweetsPosNeg(iperson, polarity_store, tweet_index_store, tweet_list):
 
 
 
-def autolabelInt(rects,ax,axNum,vals):
+def autolabel_int(rects,ax,axNum,vals):
     """attach labels to bars, integers"""
     i = 0
     for rect in rects:
@@ -108,7 +109,7 @@ def autolabelInt(rects,ax,axNum,vals):
                 ha='center', va='bottom')
         i = i + 1
 
-def autolabelDec(rects,ax,axNum,vals):
+def autolabel_dec(rects,ax,axNum,vals):
     """attach labels to bars, 3 decimals"""
     i = 0
     for rect in rects:
