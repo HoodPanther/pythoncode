@@ -84,10 +84,10 @@ def sort_tweets_pos_neg(iperson, polarity_store, tweet_index_store, tweet_list):
             tweet_pos_polarity.append(tweet_list[curindex]['text'])
         # or negative sentiments
         elif sentiment < 0:
-            #store sentiment and index
+            # store sentiment and index
             neg_polarity.append(sentiment)
             ind_neg_polarity.append(curindex)
-            #get tweet text for current sentiment
+            # get tweet text for current sentiment
             tweet_neg_polarity.append(tweet_list[curindex]['text'])
     
     return pos_polarity, neg_polarity, ind_pos_polarity, ind_neg_polarity, tweet_pos_polarity, tweet_neg_polarity
